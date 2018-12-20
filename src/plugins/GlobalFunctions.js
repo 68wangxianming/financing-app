@@ -1,22 +1,21 @@
-/**
- * Created by yuanjianxin on 2018/3/15.
- */
-const globalFunctions={
-
-  /**
-   * 返回
-   */
-  goBack(){
-    window.history.go(-1);
-  },
-
-  //todo more functions
-
-
+const globalFunctions = {
+    goBack() {
+        window.history.go(-1);
+    },
+    formatMoney(money) {
+        if (!money)
+            return null;
+        money = [...money.toString()].reverse().join('');
+        let num = Math.ceil(money.length / 3);
+        let arr = [];
+        for (let i = 0; i < num; i++)
+            arr.push([...money.substr(i * 3, 3)].reverse().join(''));
+        return arr.reverse().join('.');
+    }
 }
 
 export default {
-  install:(Vue)=>{
-    Vue.prototype.$globalFunction=globalFunctions;
-  }
+    install: (Vue) => {
+        Vue.prototype.$globalFunction = globalFunctions;
+    }
 }

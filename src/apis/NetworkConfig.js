@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import store from "../store/store.js";
-// const baseUrl = (location.host != 'www.rupiahone.com' ? 'https://lendingone.yuanstar.com/adminapi/' : '/api/')
-const baseUrl = (location.host != 'www.rupiahone.com' ? 'http://admin-api.dev.yuanstar.com' : '/api/')
+
+const baseUrl = (location.host != 'www.rupiahone.com' ? 'http://192.168.1.99:6009' : '/api/')
 Vue.prototype.$baseUrl = baseUrl
 
 let config = {
@@ -16,14 +16,24 @@ let config = {
 
     _afterHttpFunc: function (res) {
         if (res.code != '200') {
-            alert(res.msg || (res.error && res.error.msg) || "网络异常")
-            // Vue.prototype.$alert(res.msg || (res.error && res.error.msg) || "网络异常");
+            Vue.prototype.$messagebox({
+                title: '提示',
+                message: res.msg,
+            })
             return null;
         }
         return res;
     },
 
-    captcha: {method: 'get', url: '/api/captcha'},
+    captcha: {method: 'get', url: '/captcha'},
+    sendCaptchaSms: {method: 'post', url: '/sendCaptchaSms'},
+    login: {method: 'post', url: '/login'},
+    getUserInfo: {method: 'get', url: '/getUserInfo'},
+    getAccountInfo: {method: 'get', url: '/getAccountInfo'},
+    getYesterdayEarning: {method: 'get', url: '/getYesterdayEarning'},
+    getFocusProduct: {method: 'get', url: '/getFocusProduct'},
+    getNewUserRate: {method: 'get', url: '/getNewUserRate'},
+    getProductList: {method: 'get', url: '/getProductList'},
 }
 
 Object.keys(config).forEach(v => config[v].url = baseUrl + config[v].url);

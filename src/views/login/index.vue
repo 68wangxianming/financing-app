@@ -1,17 +1,21 @@
 <template>
     <div class="login">
         <div class="fill">
-            <mt-field placeholder="请输入手机号" v-model="phone"></mt-field>
-            <mt-field placeholder="请输入图片验证码">
-                <span v-html="captcha" @click="changeCaptcha"></span>
+            <div>
+                <mt-field label="+62" placeholder="请输入手机号" v-model="phone">
+                </mt-field>
+            </div>
+            <mt-field placeholder="请输入图片验证码" v-model="captcha">
+                <span v-html="captchaImg" @click="changeCaptcha"></span>
             </mt-field>
-            <mt-field placeholder="请输入短信验证码">
-                <mt-button class="send" size="small"  @click="login">发送验证码</mt-button>
+            <mt-field placeholder="请输入短信验证码" v-model="code">
+                <mt-button class="send" size="small" @click="sendCode" :disabled="sendCodeStatus">{{codeText}}
+                </mt-button>
             </mt-field>
         </div>
         <div class="operation">
             <mt-button class="signIn" size="normal" disabled v-if="!isLogin">登 录</mt-button>
-            <mt-button class="signIn" size="normal" v-if="isLogin">登 录</mt-button>
+            <mt-button class="signIn" size="normal" v-if="isLogin" @click="login">登 录</mt-button>
             <p class="Agreement">
                 登录即代表同意我们的
                 <span>用户协议、</span>
@@ -23,15 +27,20 @@
 </template>
 
 <script>
+    let timeout
+
     export default {
         data() {
             return {
                 phone: '',
-                imgCode: '',
-                msgCode: '',
                 captcha: '',
+                code: '',
                 uuid: '',
-                isLogin: false
+                isLogin: true,
+                codeText: '发送验证码',
+                sendCodeStatus: false,
+                globalCode: '62',
+                captchaImg: ''
             }
         },
         created() {
@@ -41,14 +50,87 @@
             getCaptcha() {
                 this.$api.sendRequest('captcha', {width: 105, height: 30, fontSize: 35}).then(res => {
                     this.uuid = res.data && res.data.uuid || null;
-                    this.captcha = res.data && res.data.captcha || null;
+                    this.captchaImg = res.data && res.data.captcha || null;
+                })
+            },
+            sendCode() {
+                let reg = /^(\+?62|0?)8\d+$/;
+                if (!reg.test(this.phone)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确手机号',
+                    });
+                    return
+                }
+                if (this.captcha == '') {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入图形验证码',
+                    });
+                    return
+                }
+                this.$api.sendRequest('sendCaptchaSms', {
+                    uuid: this.uuid,
+                    globalCode: this.globalCode,
+                    phone: this.phone,
+                    captcha: this.captcha,
+                }).then(res => {
+                    if (res.code == 200) {
+                        this.uuid = res.data.uuid
+                        this.countDown(60)
+                    }
+                })
+            },
+            login() {
+                let re = /^\d{4}$/
+                let reg = /^(\+?62|0?)8\d+$/;
+                if (!reg.test(this.phone)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确手机号',
+                    });
+                    return
+                } else if (!re.test(this.code)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确短信验证码',
+                    });
+                    return
+                } else if (this.captcha == "") {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确图形验证码',
+                    });
+                    return
+                }
+                this.$api.sendRequest('login', {
+                    uuid: this.uuid,
+                    phone: this.phone,
+                    captcha: this.code,
+                }).then(res => {
+                    if (res && res.code == 200) {
+                        localStorage.setItem('authToken', res.data.authToken)
+                        this.$store.commit('UPDATE_ADMIN_TOKEN', res.data.authToken);
+                        clearTimeout(timeout)
+                        this.$router.push('/home')
+                    }
                 })
             },
             changeCaptcha() {
                 this.getCaptcha();
             },
-            login() {
-                this.$router.push('index')
+            countDown(time) {
+                if (time == 0) {
+                    this.sendCodeStatus = false
+                    this.codeText = '发送验证码'
+                } else {
+                    this.sendCodeStatus = true
+                    this.codeText = `倒计时 ${time} s`
+                    time--
+                    timeout = setTimeout(() => {
+                        this.countDown(time)
+                    }, 1000)
+                }
             }
         }
     }
@@ -75,10 +157,10 @@
                 background-color: #4673F4;
                 color: #ffffff;
             }
-            .Agreement{
+            .Agreement {
                 text-align: center;
                 margin-top: 40px;
-                span{
+                span {
                     color: #4673F4;
                 }
 

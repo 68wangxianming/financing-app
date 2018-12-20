@@ -10,7 +10,7 @@ notFound = {
     path: '*',
     meta: {title: '404'},
     component: (resolve) => {
-        require(['../views/404.vue'], resolve)
+        require(['../views/404/index.vue'], resolve)
     }
 }
 

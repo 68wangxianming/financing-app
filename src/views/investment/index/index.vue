@@ -3,21 +3,21 @@
         <div class="showRate">
             <div class="content">
                 <p class="rate">
-                    <span class="span1">12%</span>
+                    <span class="span1">{{parseInt(chooseProduct.rate)/100}}%</span>
                     <span class="span2">+</span>
-                    <span class="span3">1.5</span>
+                    <span class="span3">{{newUserRate/100}}</span>
                     <span class="span4">%</span>
                 </p>
                 <p class="info">期望年化回报率</p>
                 <div class="chooseDate">
-                    <div class="item" v-for="(item,index) in daysList">
-                        <mt-button size="small" class="date" :class="typeDate==index?'account__selected':''"
-                                   @click="choose(index,item)">
-                            {{item.name}}
+                    <div class="item" v-for="(item,index) in products">
+                        <mt-button size="small" class="date" :class="item.id==typeDate.id?'account__selected':''"
+                                   @click="choose(item)">
+                            {{parseInt(item.days/30)}} 个月
                         </mt-button>
                     </div>
                 </div>
-                <mt-button class="invest" size="small">立即投资</mt-button>
+                <mt-button class="invest" size="small" @click="goPage('/tenderLoan')">立即投资</mt-button>
             </div>
         </div>
         <div class="billboard">
@@ -81,28 +81,44 @@
     export default {
         data() {
             return {
-                daysList: [
-                    {name: '1个月'},
-                    {name: '3个月'},
-                    {name: '6个月'},
-                    {name: '12个月'}
-                ],
-                typeDate: 3,
+                typeDate: {},
                 swiperOption: {//swiper3
                     autoplay: 1000,
                     speed: 1000,
                     slidesPerView: 3,
                     spaceBetween: 20
-                }
+                },
+                products: [],
+                chooseProduct: {},
+                newUserRate:''
             }
         },
+        created() {
+            this.$listener.$emit('select', '/investment')
+            this.getProductList()
+            this.getNewUserRate()
+        },
         methods: {
-            choose(index, item) {
-                this.typeDate = index
+            choose(item) {
+                this.typeDate = item
+                this.chooseProduct = item
             },
             goPage(str) {
-                this.$router.push(str)
-            }
+                this.chooseProduct.newUserRate = this.newUserRate
+                this.$router.push({path: str, query: this.chooseProduct})
+            },
+            getProductList() {
+                this.$api.sendRequest('getProductList').then(res => {
+                    this.products = res.data.products
+                    this.typeDate = this.products.filter(v => v.focus)[0] || {}
+                    this.choose(this.typeDate)
+                })
+            },
+            getNewUserRate() {
+                this.$api.sendRequest('getNewUserRate').then(res => {
+                    this.newUserRate = res.data.rate
+                });
+            },
         }
     }
 </script>
@@ -238,22 +254,22 @@
             }
 
         }
-        .foot{
+        .foot {
             width: 100%;
             height: auto;
             margin-top: 20px;
             background-color: #FFFFFF;
             padding-bottom: 40px;
-            .content{
+            .content {
                 width: 720px;
                 margin: 0 auto;
-                p{
+                p {
                     color: #979696;
                     line-height: 100px;
                     font-size: 22px;
                     text-align: center;
                 }
-                .search-details{
+                .search-details {
                     width: 500px;
                     height: 50px;
                     line-height: 50px;
