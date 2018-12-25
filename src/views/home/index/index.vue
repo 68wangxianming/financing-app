@@ -1,5 +1,12 @@
 <template>
     <div class="home">
+        <div class="navBar">
+            <van-nav-bar
+                    title="首页"
+                    @click-left="onClickLeft"
+                    @click-right="onClickRight"
+            />
+        </div>
         <div class="lunbo">
             <mt-swipe :auto="4000">
                 <mt-swipe-item v-for="img in lunboList">
@@ -22,7 +29,8 @@
                         <span class="span5">%</span>
                         <span class="span6">期限 {{focusProduct.days}} 天</span>
                     </p>
-                    <p class="rate2"><span>期望年化回报率</span><span>1 million投资预期回报Rp{{$globalFunction.formatMoney(income)}}</span></p>
+                    <p class="rate2">
+                        <span>期望年化回报率</span><span>1 million投资预期回报Rp{{$globalFunction.formatMoney(income)}}</span></p>
                 </div>
                 <mt-button class="invest" size="small" @click="goPage">立即投资</mt-button>
             </div>
@@ -49,7 +57,7 @@
                     <span>平台真实透明</span>
                 </h4>
                 <div class="details">
-                    <div class="item" v-for="item in footList">
+                    <div class="item" v-for="(item,index) in footList" :key="index">
                         <div class="imgBuild"
                              :style="{ 'background': 'url(' +item.url+ ') no-repeat center center', 'background-size': 'contain'}">
                         </div>
@@ -74,7 +82,7 @@
             return {
                 focusProduct: {},
                 getNewUserRate: '',
-                income:'',
+                income: '',
                 lunboList: [
                     {url: require('./img/1.jpg')},
                     {url: require('./img/2.jpg')},
@@ -98,20 +106,26 @@
         },
         methods: {
             async getFocusProduct() {
-                let res=await this.$api.sendRequest('getFocusProduct');
+                let res = await this.$api.sendRequest('getFocusProduct');
                 if (res && res.code == 200) {
                     this.focusProduct = res.data && res.data.focusProduct || ''
                     this.focusProduct._rate = this.focusProduct && (this.focusProduct.rate / 100) + '.0' || ''
                 }
                 //获取新用户奖励利率
-                res=await this.$api.sendRequest('getNewUserRate');
+                res = await this.$api.sendRequest('getNewUserRate');
                 if (res && res.code == 200) {
                     this.getNewUserRate = res.data && (res.data.rate / 100) || ''
                 }
-                this.income = (res.data.rate+this.focusProduct.rate)/10000 * 1000000
+                this.income = (res.data.rate + this.focusProduct.rate) / 10000 * 1000000
             },
             goPage() {
                 this.$router.push('/investment')
+            },
+            onClickLeft() {
+                Toast('返回');
+            },
+            onClickRight() {
+                Toast('按钮');
             }
         }
     }
@@ -124,6 +138,7 @@
         .lunbo {
             width: 100%;
             height: 350px;
+            margin-top: 88px;
             img {
                 width: 100%;
                 height: 350px;

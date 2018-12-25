@@ -80,7 +80,19 @@ export default {
     '/setUp': {
         meta: {title: '设置'},
         component: (resolve) => {
-            require(['views/mine/setUp/index.vue'], resolve)
+            require(['views/setUp/index/index.vue'], resolve)
+        }
+    },
+    '/setSafe': {
+        meta: {title: '账户安全'},
+        component: (resolve) => {
+            require(['views/setUp/setSafe/index.vue'], resolve)
+        }
+    },
+    '/setPass': {
+        meta: {title: '设置支付密码'},
+        component: (resolve) => {
+            require(['views/setUp/setPass/index.vue'], resolve)
         }
     },
     '/baseInfo': {
@@ -93,6 +105,18 @@ export default {
         meta: {title: '银行卡'},
         component: (resolve) => {
             require(['views/mine/bankCard/index.vue'], resolve)
+        }
+    },
+    '/recharge': {
+        meta: {title: '充值'},
+        component: (resolve) => {
+            require(['views/mine/recharge/index.vue'], resolve)
+        }
+    },
+    '/rechargePrompt': {
+        meta: {title: '充值提示'},
+        component: (resolve) => {
+            require(['views/mine/rechargePrompt/index.vue'], resolve)
         }
     },
 }

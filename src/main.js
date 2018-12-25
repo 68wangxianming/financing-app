@@ -16,9 +16,12 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import GlobalFunction from './plugins/GlobalFunctions'
 import Listener from './plugins/Listener'
+import JsBridge from "./plugins/JsBridge"
+// import vConsole from '../vconsole.js'
 
 Vue.use(Listener)
 Vue.use(GlobalFunction)
+Vue.use(JsBridge);
 Vue.use(VueAwesomeSwiper)
 Vue.config.productionTip = false
 Vue.prototype.$Func = Function
@@ -31,9 +34,13 @@ import 'vant/lib/popup/style';
 import 'vant/lib/field/style';
 import 'vant/lib/tab/style';
 import 'vant/lib/tabs/style';
-import {Button, NumberKeyboard, Popup, Field, Tab, Tabs} from 'vant';
+import 'vant/lib/collapse/style';
+import 'vant/lib/collapse-item/style';
+import 'vant/lib/nav-bar/style';
+import 'vant/lib/password-input/style';
+import {Button, NumberKeyboard, Popup, Field, Tab, Tabs, Collapse, CollapseItem, NavBar, PasswordInput} from 'vant';
 
-Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs);
+Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs).use(Collapse).use(CollapseItem).use(NavBar).use(PasswordInput);
 
 new Vue({
     i18n,

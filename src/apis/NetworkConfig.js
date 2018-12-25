@@ -34,6 +34,13 @@ let config = {
     getFocusProduct: {method: 'get', url: '/getFocusProduct'},
     getNewUserRate: {method: 'get', url: '/getNewUserRate'},
     getProductList: {method: 'get', url: '/getProductList'},
+    getUnPaidInvoice: {method: 'get', url: '/fp/getUnPaidInvoice'},
+    getPaymentChannel: {method: 'get', url: '/fp/getPaymentChannel'},
+    getMinChargeAmount: {method: 'get', url: '/getMinChargeAmount'},
+    createCharge: {method: 'post', url: '/fp/createCharge'},
+    cancelChargeInvoice: {method: 'post', url: '/fp/cancelChargeInvoice'},
+    getAccountRecord: {method: 'get', url: '/getAccountRecord'},
+
 }
 
 Object.keys(config).forEach(v => config[v].url = baseUrl + config[v].url);

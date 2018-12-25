@@ -6,7 +6,7 @@ let dispatchCallback={};
 let eventListener={};
 let eventQueue=[];
 let bridgeFrame=null;
-const _SCHEME="yjx";
+const _SCHEME="investor";
 const _QUEUE_ALARM="EVENT_ALARM";
 class JsBridge{
 
@@ -52,9 +52,13 @@ class JsBridge{
     if(!req || !req.handlerName)
       return undefined;
 
+    if(!req.params)
+        req.params=[];
+
     // 注册回调函数
     if(req.callback){
       let callbackId=generateCallbackId();
+      console.log('====callbackId',callbackId);
       req.callbackId=callbackId;
       dispatchCallback[callbackId]=req.callback;
     }
@@ -86,6 +90,9 @@ class JsBridge{
     // }
 
     // js dispatch callback
+
+      console.log('====data',data.callbackId,typeof data);
+
     if(data.callbackId){
       callbackFunc=dispatchCallback[data.callbackId];
       if(!callbackFunc)

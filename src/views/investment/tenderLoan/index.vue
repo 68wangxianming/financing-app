@@ -36,7 +36,7 @@
         <div class="balance">
             <div class="content">
                 <span class="left">账户余额(Rp)</span>
-                <span class="right">100,000,000</span>
+                <span class="right">{{$globalFunction.formatMoney(availableBalance)}}</span>
             </div>
         </div>
 
@@ -52,25 +52,30 @@
             </div>
         </div>
 
-        <mt-button class="foot" @click="pay" :disabled="btnStatusPay">确认支付Rp 1,000,000</mt-button>
+        <mt-button class="foot" @click="pay" :disabled="btnStatusPay" v-if="showPayBtn">确认支付Rp
+            {{$globalFunction.formatMoney(money)}}
+        </mt-button>
+        <mt-button class="foot" @click="recharge" v-if="!showPayBtn">账户余额不足，立即充值</mt-button>
 
         <van-popup v-model="showPayment" position="bottom">
             <div class="payment">
                 <div class="total">
                     <span class="space"></span>
-                    <span class="money">支付 <span>Rp </span><span>1,000,000</span></span>
-                    <i class="icon iconfont icon-cha"></i>
+                    <span class="money">支付 <span>Rp </span><span>{{$globalFunction.formatMoney(money)}}</span></span>
+                    <i class="icon iconfont icon-cha" @click="closePopup"></i>
                 </div>
-                <div class="phone">已发送至手机号 <span> 8201809100</span></div>
+                <div class="phone">已发送至手机号 <span> {{phone}}</span></div>
                 <div class="code">
-                    <mt-field placeholder="请输入短信验证码" readonly="">
-                        <mt-button class="send" size="small">发送验证码</mt-button>
-                    </mt-field>
+                    <input type="text" placeholder="请输入短信验证码" readonly v-model="code">
+                    <mt-button class="send" size="small" @click="sendCode" :disabled="sendCodeStatus">{{codeText}}
+                    </mt-button>
                 </div>
+
+                <mt-button class="makeTurePay" size="small" @click="makeTurePay">确认支付</mt-button>
                 <van-number-keyboard
                         :show="show"
                         extra-key="."
-                        close-button-text="完成"
+                        delete-button-text="delete"
                         @input="onInput"
                         @delete="onDelete"
                 />
@@ -99,6 +104,11 @@
                 btnStatusAdd: false,
                 btnStatusReduce: false,
                 btnStatusPay: false,
+                sendCodeStatus: false,
+                codeText: '发送验证码',
+                phone: '',
+                availableBalance: '',
+                showPayBtn: true,
             }
         },
         created() {
@@ -108,6 +118,8 @@
             this.minMoney = this.$route.query.minMoney
             this.newUserRate = this.$route.query.newUserRate
             this.money = this.minMoney
+            this.phone = JSON.parse(localStorage.getItem('userInfo')).phone
+            this.availableBalance = JSON.parse(localStorage.getItem('accountInfo')).availableBalance
         },
         watch: {
             money: function (val, oldVal) {
@@ -116,25 +128,63 @@
                     this.btnStatusPay = true
                     this.btnStatusAdd = true
                     this.btnStatusReduce = false
+                    this.availableBalanceCompare(val)
                 } else if (Number(val) <= Number(this.minMoney)) {
                     this.btnStatusReduce = true
-                    this.backMoney = parseInt(val * (this.rate + this.newUserRate) / 10000 * this.days / 365)
+                    this.backMoney = parseInt(val * (Number(this.rate) + Number(this.newUserRate)) / 10000 * this.days / 365)
+                    this.availableBalanceCompare(val)
                 } else {
                     this.btnStatusAdd = false
                     this.btnStatusReduce = false
-                    this.backMoney = parseInt(val * (this.rate + this.newUserRate) / 10000 * this.days / 365)
+                    this.backMoney = parseInt(val * (Number(this.rate) + Number(this.newUserRate)) / 10000 * this.days / 365)
                     this.warming = false
                     this.btnStatusPay = false
+                    this.availableBalanceCompare(val)
                 }
             }
         },
         methods: {
-            pay() {
-                this.showPayment = true
+            availableBalanceCompare(val) {
+                if (val > this.availableBalance) {
+                    this.showPayBtn = false
+                } else {
+                    this.showPayBtn = true
+                }
+            },
+            sendCode() {
+                this.$api.sendRequest('sendCaptchaSms', {
+                    uuid: this.uuid,
+                    globalCode: this.globalCode,
+                    phone: this.phone,
+                    captcha: this.captcha,
+                }).then(res => {
+                    if (res.code == 200) {
+                        this.uuid = res.data.uuid
+                        this.countDown(60)
+                    }
+                })
+            },
+            countDown(time) {
+                if (time == 0) {
+                    this.sendCodeStatus = false
+                    this.codeText = '发送验证码'
+                } else {
+                    this.sendCodeStatus = true
+                    this.codeText = `倒计时 ${time} s`
+                    time--
+                    timeout = setTimeout(() => {
+                        this.countDown(time)
+                    }, 1000)
+                }
+            },
+            makeTurePay() {
+
             },
             onInput(value) {
+                this.code += value
             },
             onDelete() {
+                this.code = this.code.substring(0, this.code.length - 1)
             },
             btnCount(action) {
                 if (action == 'add') {
@@ -142,9 +192,17 @@
                 } else {
                     this.money = Number(this.money) - Number((this.maxMoney - this.minMoney) / 10)
                 }
+            },
+            pay() {
+                this.showPayment = true
+            },
+            recharge() {
+                alert('去充值')
+            },
+            closePopup() {
+                this.showPayment = false
             }
         },
-        components: {}
     }
 </script>
 
@@ -323,7 +381,7 @@
         }
         .payment {
             width: 100%;
-            height: 850px;
+            height: 880px;
             font-size: 28px;
             .total {
                 width: 100%;
@@ -354,15 +412,33 @@
                 line-height: 80px;
                 margin: 20px auto;
                 color: #101010;
+                font-size: 32px;
             }
             .code {
-                width: 700px;
+                display: flex;
+                justify-content: space-between;
+                width: 650px;
+                height: 80px;
                 margin: 0 auto;
                 color: #101010;
+                input {
+                    display: inline-block;
+                    width: 450px;
+                    border: 1px solid #BBBBBB;
+                    text-indent: 20px;
+                }
+                .send {
+                    width: 200px;
+                    height: 80px;
+                }
+            }
+            .makeTurePay {
+                width: 650px;
+                height: 80px;
+                margin: 50px 50px;
             }
 
         }
-
         .ci-check-lable {
             margin: 0 auto;
             position: relative;
@@ -403,6 +479,8 @@
             border-right: 0;
         }
         .mint-button {
+            background-color: #4673F4;
+            color: #ffffff;
             border-radius: 0;
         }
     }

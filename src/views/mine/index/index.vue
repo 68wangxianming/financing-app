@@ -30,7 +30,7 @@
                 </div>
                 <div class="item handle">
                     <mt-button class="btn">提现</mt-button>
-                    <mt-button class="btn">充值</mt-button>
+                    <mt-button class="btn" @click="recharge">充值</mt-button>
                 </div>
             </div>
         </div>
@@ -99,6 +99,7 @@
                 this.$api.sendRequest('getUserInfo').then(res => {
                     if (res && res.code == 200) {
                         this.userInfo = res.data && res.data.userInfo || ''
+                        localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
                     }
                 })
             },
@@ -106,6 +107,8 @@
                 this.$api.sendRequest('getAccountInfo').then(res => {
                     if (res && res.code == 200) {
                         this.accountInfo = res.data && res.data.accountInfo || ''
+                        localStorage.setItem('accountInfo',JSON.stringify(this.accountInfo))
+
                     }
                 })
             },
@@ -119,6 +122,9 @@
             goRecord(str) {
                 this.$router.push(str)
             },
+            recharge() {
+                this.$router.push('/recharge')
+            }
         }
     }
 </script>

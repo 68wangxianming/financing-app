@@ -1,5 +1,15 @@
 <template>
     <div class="investment">
+        <div class="navBar">
+            <van-nav-bar
+                    title="标题"
+                    right-text="按钮"
+                    left-arrow
+                    @click-left="onClickLeft"
+                    @click-right="onClickRight"
+            />
+        </div>
+
         <div class="showRate">
             <div class="content">
                 <p class="rate">
@@ -90,7 +100,7 @@
                 },
                 products: [],
                 chooseProduct: {},
-                newUserRate:''
+                newUserRate: ''
             }
         },
         created() {
@@ -119,6 +129,12 @@
                     this.newUserRate = res.data.rate
                 });
             },
+            onClickLeft() {
+                Toast('返回');
+            },
+            onClickRight() {
+                Toast('按钮');
+            }
         }
     }
 </script>
@@ -132,6 +148,7 @@
             height: auto;
             background-color: #FFFFFF;
             padding-bottom: 50px;
+            margin-top: 88px;
             .content {
                 width: 720px;
                 margin: 0 auto;

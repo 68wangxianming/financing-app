@@ -1,6 +1,10 @@
 <template>
     <div class="setUp">
         <div class="content">
+            <div @click="setSafe">
+                <mt-cell title="账户安全" is-link class="item">
+                </mt-cell>
+            </div>
             <div>
                 <mt-cell title="查看投资协议" is-link class="item">
                 </mt-cell>
@@ -16,9 +20,7 @@
 <script>
     export default {
         data() {
-            return{
-
-            }
+            return {}
         },
         methods: {
             signOut() {
@@ -26,15 +28,18 @@
                     title: '提示',
                     message: '是否确认退出登录？',
                     showCancelButton: true,
-                    confirmButtonText:"确认",
-                    cancelButtonText:"取消"
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消"
                 }).then(action => {
-                    if(action == 'confirm'){
+                    if (action == 'confirm') {
                         console.log('退出成功')
-                    }else{
+                    } else {
                         console.log('取消登录')
                     }
                 })
+            },
+            setSafe() {
+                this.$router.push('/setSafe')
             }
         }
     }

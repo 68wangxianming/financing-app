@@ -41,12 +41,10 @@
         transform: translate(-30px, 0);
     }
 
-    .manage .mint-cell-text {
+    .mint-cell-text {
         font-size: 28px !important;
-    }
-
-    .setUp .mint-cell-text {
-        font-size: 28px !important;
+        letter-spacing: 1px;
+        color: #060606 !important;
     }
 
     .moneyFlow .van-tab {
@@ -65,22 +63,40 @@
         margin-left: 75px;
     }
 
-    .baseInfo .mint-cell-text {
-        font-size: 28px !important;
-        color: #060606 !important;
-    }
-
     .baseInfo .mint-field-core {
         font-size: 28px;
     }
 
-    .bankCard .mint-cell-text {
-        font-size: 28px;
-        letter-spacing: 1px;
+    .mint-field .mint-cell-title {
+        width: 70px !important;
     }
 
+    .baseInfo .mint-field .mint-cell-title {
+        width: 130px !important;
+    }
 
-    .mint-field .mint-cell-title{
-        width: 70px!important;
+    .baseInfo .mint-field-core {
+        text-align: right;
+    }
+
+    .navBar {
+        width: 750px;
+        position: fixed;
+        top: 0;
+        z-index: 99999;
+        .van-nav-bar .van-icon {
+            color: #FFFFFF;
+        }
+        .van-nav-bar__text {
+            color: #FFFFFF;
+        }
+    }
+
+    .van-nav-bar {
+        background-color: #3D70FD !important;
+        color: #FFFFFF;
+        letter-spacing: 1px;
+        height: 88px;
+        line-height: 88px;
     }
 </style>

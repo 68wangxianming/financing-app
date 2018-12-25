@@ -23,6 +23,9 @@
                 <span>授权信</span>
             </p>
         </div>
+
+
+        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid aspernatur commodi consectetur debitis et harum incidunt iste libero, neque nihil nostrum officiis optio quaerat quam quasi quis sint totam, voluptates!</div>
     </div>
 </template>
 
@@ -54,21 +57,21 @@
                 })
             },
             sendCode() {
-                let reg = /^(\+?62|0?)8\d+$/;
-                if (!reg.test(this.phone)) {
-                    this.$messagebox({
-                        title: '提示',
-                        message: '请输入正确手机号',
-                    });
-                    return
-                }
-                if (this.captcha == '') {
-                    this.$messagebox({
-                        title: '提示',
-                        message: '请输入图形验证码',
-                    });
-                    return
-                }
+                // let reg = /^(\+?62|0?)8\d+$/;
+                // if (!reg.test(this.phone)) {
+                //     this.$messagebox({
+                //         title: '提示',
+                //         message: '请输入正确手机号',
+                //     });
+                //     return
+                // }
+                // if (this.captcha == '') {
+                //     this.$messagebox({
+                //         title: '提示',
+                //         message: '请输入图形验证码',
+                //     });
+                //     return
+                // }
                 this.$api.sendRequest('sendCaptchaSms', {
                     uuid: this.uuid,
                     globalCode: this.globalCode,
@@ -82,27 +85,27 @@
                 })
             },
             login() {
-                let re = /^\d{4}$/
-                let reg = /^(\+?62|0?)8\d+$/;
-                if (!reg.test(this.phone)) {
-                    this.$messagebox({
-                        title: '提示',
-                        message: '请输入正确手机号',
-                    });
-                    return
-                } else if (!re.test(this.code)) {
-                    this.$messagebox({
-                        title: '提示',
-                        message: '请输入正确短信验证码',
-                    });
-                    return
-                } else if (this.captcha == "") {
-                    this.$messagebox({
-                        title: '提示',
-                        message: '请输入正确图形验证码',
-                    });
-                    return
-                }
+                // let re = /^\d{4}$/
+                // let reg = /^(\+?62|0?)8\d+$/;
+                // if (!reg.test(this.phone)) {
+                //     this.$messagebox({
+                //         title: '提示',
+                //         message: '请输入正确手机号',
+                //     });
+                //     return
+                // } else if (!re.test(this.code)) {
+                //     this.$messagebox({
+                //         title: '提示',
+                //         message: '请输入正确短信验证码',
+                //     });
+                //     return
+                // } else if (this.captcha == "") {
+                //     this.$messagebox({
+                //         title: '提示',
+                //         message: '请输入正确图形验证码',
+                //     });
+                //     return
+                // }
                 this.$api.sendRequest('login', {
                     uuid: this.uuid,
                     phone: this.phone,
