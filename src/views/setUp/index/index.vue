@@ -1,17 +1,26 @@
 <template>
     <div class="setUp">
-        <div class="content">
-            <div @click="setSafe">
-                <mt-cell title="账户安全" is-link class="item">
-                </mt-cell>
-            </div>
-            <div>
-                <mt-cell title="查看投资协议" is-link class="item">
-                </mt-cell>
-            </div>
-            <div @click="signOut">
-                <mt-cell title="退出登录" is-link class="item">
-                </mt-cell>
+        <div class="navBar">
+            <van-nav-bar
+                    title="设置"
+                    left-arrow
+                    @click-left="onClickLeft"
+            />
+        </div>
+        <div class="setUpDetails">
+            <div class="content">
+                <div @click="setSafe">
+                    <mt-cell title="账户安全" is-link class="item">
+                    </mt-cell>
+                </div>
+                <div>
+                    <mt-cell title="查看投资协议" is-link class="item">
+                    </mt-cell>
+                </div>
+                <div @click="signOut">
+                    <mt-cell title="退出登录" is-link class="item">
+                    </mt-cell>
+                </div>
             </div>
         </div>
     </div>
@@ -40,20 +49,28 @@
             },
             setSafe() {
                 this.$router.push('/setSafe')
-            }
+            },
+            onClickLeft() {
+                this.$router.push('/mine')
+            },
         }
     }
 </script>
 
 <style scoped lang="scss">
     .setUp {
-        width: 750px;
-        height: 300px;
-        font-size: 28px;
-        color: #807E7E;
-        .content {
-            width: 700px;
-            margin: 20px auto;
+        width: 100%;
+        height: 100vh;
+        background-color: #F5F5F5;
+        .setUpDetails{
+            background-color: #FFFFFF;
+            margin-top: 88px;
+            padding: 20px 0;
+            .content {
+                width: 700px;
+                margin: 0 auto ;
+            }
         }
+
     }
 </style>

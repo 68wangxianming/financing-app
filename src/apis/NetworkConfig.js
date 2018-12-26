@@ -40,6 +40,9 @@ let config = {
     createCharge: {method: 'post', url: '/fp/createCharge'},
     cancelChargeInvoice: {method: 'post', url: '/fp/cancelChargeInvoice'},
     getAccountRecord: {method: 'get', url: '/getAccountRecord'},
+    getProfileInfo: {method: 'get', url: '/getProfileInfo'},
+    saveProfile: {method: 'post', url: '/saveProfile'},
+    getUserAvatar: {method: 'get', url: '/getUserAvatar'},
 
 }
 

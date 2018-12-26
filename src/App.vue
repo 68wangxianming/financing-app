@@ -63,20 +63,8 @@
         margin-left: 75px;
     }
 
-    .baseInfo .mint-field-core {
-        font-size: 28px;
-    }
-
     .mint-field .mint-cell-title {
         width: 70px !important;
-    }
-
-    .baseInfo .mint-field .mint-cell-title {
-        width: 130px !important;
-    }
-
-    .baseInfo .mint-field-core {
-        text-align: right;
     }
 
     .navBar {
@@ -92,6 +80,10 @@
         }
     }
 
+    .van-hairline--bottom::after{
+        border: none!important;
+    }
+
     .van-nav-bar {
         background-color: #3D70FD !important;
         color: #FFFFFF;
@@ -99,4 +91,9 @@
         height: 88px;
         line-height: 88px;
     }
+
+    .van-field .van-cell__title {
+        max-width: 450px !important;
+    }
+
 </style>

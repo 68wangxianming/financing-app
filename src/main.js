@@ -38,9 +38,11 @@ import 'vant/lib/collapse/style';
 import 'vant/lib/collapse-item/style';
 import 'vant/lib/nav-bar/style';
 import 'vant/lib/password-input/style';
-import {Button, NumberKeyboard, Popup, Field, Tab, Tabs, Collapse, CollapseItem, NavBar, PasswordInput} from 'vant';
+import 'vant/lib/cell-group/style';
+import 'vant/lib/cell/style';
+import {Button, NumberKeyboard, Popup, Field, Tab, Tabs, Collapse, CollapseItem, NavBar, PasswordInput,CellGroup,Cell} from 'vant';
 
-Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs).use(Collapse).use(CollapseItem).use(NavBar).use(PasswordInput);
+Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs).use(Collapse).use(CollapseItem).use(NavBar).use(PasswordInput).use(CellGroup).use(Cell);
 
 new Vue({
     i18n,

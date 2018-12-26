@@ -1,5 +1,8 @@
 <template>
     <div class="mine">
+        <div class="navBar">
+            <van-nav-bar title="我的"/>
+        </div>
         <div class="income">
             <div class="content">
                 <div class="head">
@@ -137,6 +140,7 @@
             width: 100%;
             background-color: #3D70FD;
             padding: 50px 0;
+            /*margin-top: 88px;*/
             .content {
                 width: 720px;
                 margin: 0 auto;

@@ -1,15 +1,8 @@
 <template>
     <div class="investment">
         <div class="navBar">
-            <van-nav-bar
-                    title="标题"
-                    right-text="按钮"
-                    left-arrow
-                    @click-left="onClickLeft"
-                    @click-right="onClickRight"
-            />
+            <van-nav-bar title="投资"/>
         </div>
-
         <div class="showRate">
             <div class="content">
                 <p class="rate">
@@ -129,12 +122,6 @@
                     this.newUserRate = res.data.rate
                 });
             },
-            onClickLeft() {
-                Toast('返回');
-            },
-            onClickRight() {
-                Toast('按钮');
-            }
         }
     }
 </script>

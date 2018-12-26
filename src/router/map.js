@@ -53,6 +53,12 @@ export default {
             require(['views/investment/tenderLoan/index.vue'], resolve)
         }
     },
+    '/resultDetails': {
+        meta: {title: '结果详情'},
+        component: (resolve) => {
+            require(['views/investment/resultDetails/index.vue'], resolve)
+        }
+    },
     '/moneyFlow': {
         meta: {title: '资金流水'},
         component: (resolve) => {
@@ -95,6 +101,18 @@ export default {
             require(['views/setUp/setPass/index.vue'], resolve)
         }
     },
+    '/changePass': {
+        meta: {title: '修改密码'},
+        component: (resolve) => {
+            require(['views/setUp/changePass/index.vue'], resolve)
+        }
+    },
+    '/forgetPass': {
+        meta: {title: '忘记密码'},
+        component: (resolve) => {
+            require(['views/setUp/forgetPass/index.vue'], resolve)
+        }
+    },
     '/baseInfo': {
         meta: {title: '基本信息'},
         component: (resolve) => {
@@ -104,7 +122,25 @@ export default {
     '/bankCard': {
         meta: {title: '银行卡'},
         component: (resolve) => {
-            require(['views/mine/bankCard/index.vue'], resolve)
+            require(['views/mine/bank/bankCard/index.vue'], resolve)
+        }
+    },
+    '/addBankCard': {
+        meta: {title: '添加银行卡'},
+        component: (resolve) => {
+            require(['views/mine/bank/addBankCard/index.vue'], resolve)
+        }
+    },
+    '/bankChoice': {
+        meta: {title: '银行卡选择'},
+        component: (resolve) => {
+            require(['views/mine/bank/bankChoice/index.vue'], resolve)
+        }
+    },
+    '/bankList': {
+        meta: {title: '银行卡列表'},
+        component: (resolve) => {
+            require(['views/mine/bank/bankList/index.vue'], resolve)
         }
     },
     '/recharge': {
