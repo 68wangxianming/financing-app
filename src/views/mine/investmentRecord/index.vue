@@ -7,11 +7,15 @@
                 <ul class="page-loadmore-list">
                     <li class="page-loadmore-listitem" v-for="item in list">
                         <div class="item">
-                            <div class="top"><span>2018-06-08  15:34:01</span><span>I2018051801</span></div>
-                            <p><span>投资金额</span><span>Rp 1,000,000</span></p>
-                            <p><span>期限</span><span>30 天</span></p>
-                            <p><span>预期收益</span><span>Rp XXXX</span></p>
-                            <div class="bottom"><span>状态</span><span>投资进行中</span></div>
+                            <div class="top"><span>{{$globalFunction.timeConversion(item.createTime)}}</span><span>{{item.invNo}}</span>
+                            </div>
+                            <p><span>投资金额</span><span>Rp {{$globalFunction.formatMoney(item.amount)}}</span></p>
+                            <p><span>期限</span><span>{{item.days}} 天</span></p>
+                            <p><span>预期收益</span><span>Rp {{$globalFunction.formatMoney(item.income)}}</span></p>
+                            <div class="bottom"
+                                 :class="{'commit':item.status =='0','audited':item.status =='1','rejectExamine':item.status =='2','commit':item.investmenting =='3','commit':item.investmented =='4'}">
+                                <span>状态</span><span>{{$globalFunction.investorRecordStatus(item.status)}}</span>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -45,9 +49,27 @@
                 topStatus: '',
                 foot: true,
                 isAutoFill: false,
+                perPage: 10,
+                currentPage: 1,
             };
         },
+        created() {
+            this.getInvestorList()
+        },
         methods: {
+            getInvestorList() {
+                this.$api.sendRequest('getInvestorList', {
+                    perPage: this.perPage,
+                    currentPage: this.currentPage,
+                }).then(res => {
+                    console.log(res.data.items);
+                    if (res.data.items.length > 0) {
+                        this.list = this.list.concat(res.data.items)
+                    } else {
+                        this.allLoaded = true;
+                    }
+                })
+            },
             handleBottomChange(status) {
                 this.bottomStatus = status;
                 if (status == 'pull') {
@@ -67,37 +89,28 @@
             loadBottom() {
                 console.log('loadBottom');
                 setTimeout(() => {
-                    let lastValue = this.list[this.list.length - 1];
-                    if (lastValue < 40) {
-                        for (let i = 1; i <= 10; i++) {
-                            this.list.push(lastValue + i);
-                        }
-                    } else {
-                        this.allLoaded = true;
-                    }
+                    this.currentPage++
+                    this.getInvestorList()
                     this.$refs.loadmore.onBottomLoaded();
                 }, 1500);
             },
-
             loadTop() {
                 setTimeout(() => {
-                    let lastValue = this.list[this.list.length - 1];
-                    if (lastValue < 40) {
-                        for (let i = 1; i <= 10; i++) {
-                            this.list.push(lastValue + i);
-                        }
-                    } else {
-                        this.allLoaded = true;
-                    }
+                    this.currentPage = 1
+                    this.list = []
+                    this.allLoaded = false
+                    this.getInvestorList()
                     this.$refs.loadmore.onTopLoaded();
                 }, 1500);
+            },
+            onClickLeft() {
+
+            },
+            goPage(name, code) {
+                this.$router.push('/addBankCard')
+                this.$router.push({path: '/addBankCard', query: {bankName: name, code: code}})
             }
-        },
-        created() {
-            for (let i = 1; i <= 10; i++) {
-                this.list.push(i);
-            }
-        },
+        }
     };
 </script>
 
@@ -112,16 +125,16 @@
             .page-loadmore-listitem {
                 width: 750px;
                 height: auto;
-                .item{
+                .item {
                     width: 700px;
                     height: auto;
                     overflow: hidden;
                     border: 2px solid #D6D6D9;
                     border-radius: 15px;
-                    margin:30px auto;
+                    margin: 30px auto;
                     font-size: 28px;
                     color: #868383;
-                    .top{
+                    .top {
                         width: 650px;
                         height: 80px;
                         margin: 0 auto;
@@ -130,18 +143,41 @@
                         line-height: 100px;
                         border-bottom: 2px solid #D6D6D9;
                     }
-                    .bottom{
+                    .bottom {
                         width: 650px;
                         height: 80px;
                         line-height: 80px;
                         margin: 0 auto;
                         display: flex;
                         justify-content: space-between;
-                        background-color: #FFC46D;
-                        color: #FFFFFF;
                         padding: 0 26px;
                     }
-                    p{
+                    /*提交*/
+                    .commit {
+                        background-color: gray;
+                        color: white;
+                    }
+                    /*待审核*/
+                    .audited {
+                        background-color: orange;
+                        color: white;
+                    }
+                    /*审核失败*/
+                    .rejectExamine {
+                        background-color: #dddddd;
+                        color: white;
+                    }
+                    /*投资进行中*/
+                    .investmenting {
+                        background-color: #FFC46D;
+                        color: white;
+                    }
+                    /*投资完毕，收益入账*/
+                    .investmented {
+                        background-color: green;
+                        color: white;
+                    }
+                    p {
                         width: 650px;
                         height: 60px;
                         line-height: 60px;

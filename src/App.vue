@@ -80,20 +80,37 @@
         }
     }
 
-    .van-hairline--bottom::after{
-        border: none!important;
+    .van-hairline--bottom::after {
+        border: none !important;
     }
 
     .van-nav-bar {
         background-color: #3D70FD !important;
         color: #FFFFFF;
         letter-spacing: 1px;
-        height: 88px;
-        line-height: 88px;
+        height: 88px!important;
+        line-height: 88px!important;
     }
 
-    .van-field .van-cell__title {
+    .addBankCard .van-field .van-cell__title {
         max-width: 450px !important;
     }
 
+    /*step*/
+    .resultDetails .van-step .van-step__circle {
+        top: 18px;
+        left: -48px;
+        display: block;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: gainsboro;
+    }
+
+    .van-step--vertical.van-step--process .van-icon-checked {
+        top: 12px;
+        left: -48px !important;
+        line-height: 1;
+        font-size: 35px !important;
+    }
 </style>

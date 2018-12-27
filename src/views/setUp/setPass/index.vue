@@ -34,12 +34,12 @@
                 showKeyboard: true,
                 warmStatus: false,
                 password: '',
-                makeTurePassword:''
+                makeTurePassword: ''
             };
         },
-        watch:{
-            value(val,oldVal) {
-                if(val.length != 6) {
+        watch: {
+            value(val, oldVal) {
+                if (val.length != 6) {
                     this.warmStatus = false
                 }
             }
@@ -48,26 +48,35 @@
             onInput(key) {
                 this.value = (this.value + key).slice(0, 6);
                 if (this.value.length == 6) {
-                    if(this.password) {
+                    if (this.password) {
                         this.makeTurePassword = this.value
-                        if(this.password == this.makeTurePassword) {
-                            this.$messagebox({
-                                title:'提示',
-                                message:'success'
+                        if (this.password == this.makeTurePassword) {
+                            this.$api.sendRequest('setPayPassword', {
+                                payPassword: this.password
+                            }).then(res => {
+                                if (res.data.result) {
+                                    this.$messagebox({
+                                        title: '提示',
+                                        message: '设置成功'
+                                    }).then(action => {
+                                        if (action == 'confirm') {
+                                            this.$router.push('/setSafe')
+                                        }
+                                    })
+                                }
                             })
-                        }else {
+                        } else {
                             this.warmStatus = true
                         }
-
-                    }else {
+                    } else {
                         this.$indicator.open()
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             this.password = this.value
                             this.value = ''
                             this.$refs.tip1.innerHTML = '确认密码'
                             this.$refs.tip2.innerHTML = '请再次输入刚才设置的密码'
                             this.$indicator.close()
-                        },1000)
+                        }, 1000)
                     }
                 }
             },
@@ -88,7 +97,7 @@
         font-size: 28px;
         color: #807E7E;
         background-color: #FAFAFA;
-        .setPassDetails{
+        .setPassDetails {
             margin-top: 88px;
             .content {
                 width: 700px;

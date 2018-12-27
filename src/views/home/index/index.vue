@@ -3,13 +3,11 @@
         <div class="navBar">
             <van-nav-bar
                     title="首页"
-                    @click-left="onClickLeft"
-                    @click-right="onClickRight"
             />
         </div>
         <div class="lunbo">
             <mt-swipe :auto="4000">
-                <mt-swipe-item v-for="img in lunboList">
+                <mt-swipe-item v-for="(img,index) in lunboList" :key="index">
                     <img :src="img.url" alt="">
                 </mt-swipe-item>
             </mt-swipe>
@@ -68,6 +66,8 @@
             </div>
         </div>
 
+        <unlogin :showPopUp="showPopUp" v-if="showPopUp" @closePopup="closeUnlogin"></unlogin>
+
         <br>
         <br>
         <br>
@@ -77,9 +77,12 @@
 </template>
 
 <script>
+    import unlogin from 'components/unLogin.vue'
+
     export default {
         data() {
             return {
+                showPopUp: false,
                 focusProduct: {},
                 getNewUserRate: '',
                 income: '',
@@ -119,14 +122,19 @@
                 this.income = (res.data.rate + this.focusProduct.rate) / 10000 * 1000000
             },
             goPage() {
-                this.$router.push('/investment')
+                this.$store.dispatch('FLASH_ADMIN_TOKEN');
+                if (this.$store.state.adminToken == 'null') {
+                    this.showPopUp = true
+                } else {
+                    this.$router.push('/investment')
+                }
             },
-            onClickLeft() {
-                Toast('返回');
-            },
-            onClickRight() {
-                Toast('按钮');
+            closeUnlogin() {
+                this.showPopUp = false
             }
+        },
+        components: {
+            unlogin
         }
     }
 </script>

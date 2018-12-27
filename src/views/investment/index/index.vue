@@ -73,6 +73,8 @@
                 <div class="search-details">资金存管安全，请放心投资</div>
             </div>
         </div>
+        <unlogin :showPopUp="showPopUp" v-if="showPopUp" @closePopup="closeUnlogin"></unlogin>
+
         <br>
         <br>
         <br>
@@ -81,9 +83,13 @@
 </template>
 
 <script>
+    import unlogin from 'components/unLogin.vue'
+
+
     export default {
         data() {
             return {
+                showPopUp: false,
                 typeDate: {},
                 swiperOption: {//swiper3
                     autoplay: 1000,
@@ -107,8 +113,13 @@
                 this.chooseProduct = item
             },
             goPage(str) {
-                this.chooseProduct.newUserRate = this.newUserRate
-                this.$router.push({path: str, query: this.chooseProduct})
+                this.$store.dispatch('FLASH_ADMIN_TOKEN');
+                if (this.$store.state.adminToken == 'null') {
+                    this.showPopUp = true
+                } else {
+                    this.chooseProduct.newUserRate = this.newUserRate
+                    this.$router.push({path: str, query: this.chooseProduct})
+                }
             },
             getProductList() {
                 this.$api.sendRequest('getProductList').then(res => {
@@ -122,6 +133,12 @@
                     this.newUserRate = res.data.rate
                 });
             },
+            closeUnlogin() {
+                this.showPopUp = false
+            }
+        },
+        components: {
+            unlogin
         }
     }
 </script>

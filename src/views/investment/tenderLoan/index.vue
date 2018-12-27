@@ -1,5 +1,12 @@
 <template>
     <div class="tenderLoan">
+        <div class="navBar">
+            <van-nav-bar
+                    title="投资出标"
+                    left-arrow
+                    @click-left="onClickLeft"
+            />
+        </div>
         <div class="rate">
             <div class="content">
                 <div class="left">
@@ -48,7 +55,6 @@
                     <span class="info">我已阅读并同意<span class="agreement">《Rupiah One投资协议》</span>
                     </span>
                 </label>
-
             </div>
         </div>
 
@@ -64,14 +70,14 @@
                     <span class="money">支付 <span>Rp </span><span>{{$globalFunction.formatMoney(money)}}</span></span>
                     <i class="icon iconfont icon-cha" @click="closePopup"></i>
                 </div>
-                <div class="phone">已发送至手机号 <span> {{phone}}</span></div>
-                <div class="code">
-                    <input type="text" placeholder="请输入短信验证码" readonly v-model="code">
-                    <mt-button class="send" size="small" @click="sendCode" :disabled="sendCodeStatus">{{codeText}}
-                    </mt-button>
-                </div>
+                <div class="tip1">请输入支付密码</div>
+                <van-password-input :value="value" @focus="showKeyboard = true"/>
 
-                <mt-button class="makeTurePay" size="small" @click="makeTurePay">确认支付</mt-button>
+                <mt-button class="makeTurePay" size="small" @click="makeTurePay" :disabled="makeSureBtn">确认支付
+                </mt-button>
+
+                <div class="tip2">忘记密码</div>
+
                 <van-number-keyboard
                         :show="show"
                         extra-key="."
@@ -92,7 +98,6 @@
                 reason: true,
                 showPayment: false,
                 show: true,
-                code: '',
                 money: '',
                 rate: '',
                 days: '',
@@ -104,11 +109,11 @@
                 btnStatusAdd: false,
                 btnStatusReduce: false,
                 btnStatusPay: false,
-                sendCodeStatus: false,
-                codeText: '发送验证码',
-                phone: '',
                 availableBalance: '',
                 showPayBtn: true,
+                value: '',
+                makeSureBtn: true,
+                prodNo: ''
             }
         },
         created() {
@@ -117,8 +122,8 @@
             this.maxMoney = this.$route.query.maxMoney
             this.minMoney = this.$route.query.minMoney
             this.newUserRate = this.$route.query.newUserRate
+            this.prodNo = this.$route.query.prodNo
             this.money = this.minMoney
-            this.phone = JSON.parse(localStorage.getItem('userInfo')).phone
             this.availableBalance = JSON.parse(localStorage.getItem('accountInfo')).availableBalance
         },
         watch: {
@@ -141,6 +146,13 @@
                     this.btnStatusPay = false
                     this.availableBalanceCompare(val)
                 }
+            },
+            value: function (val, oldVal) {
+                if (this.value.length == 6) {
+                    this.makeSureBtn = false
+                } else {
+                    this.makeSureBtn = true
+                }
             }
         },
         methods: {
@@ -151,40 +163,25 @@
                     this.showPayBtn = true
                 }
             },
-            sendCode() {
-                this.$api.sendRequest('sendCaptchaSms', {
-                    uuid: this.uuid,
-                    globalCode: this.globalCode,
-                    phone: this.phone,
-                    captcha: this.captcha,
+            makeTurePay() {
+                this.$api.sendRequest('verifyPayPassword', {
+                    payPassword: this.value
                 }).then(res => {
-                    if (res.code == 200) {
-                        this.uuid = res.data.uuid
-                        this.countDown(60)
+                    if (res.data.result) {
+                        this.submitInvestor()//提交申请
+                    } else {
+                        this.$messagebox({
+                            title: '提示',
+                            message: '密码错误'
+                        })
                     }
                 })
             },
-            countDown(time) {
-                if (time == 0) {
-                    this.sendCodeStatus = false
-                    this.codeText = '发送验证码'
-                } else {
-                    this.sendCodeStatus = true
-                    this.codeText = `倒计时 ${time} s`
-                    time--
-                    timeout = setTimeout(() => {
-                        this.countDown(time)
-                    }, 1000)
-                }
-            },
-            makeTurePay() {
-
-            },
-            onInput(value) {
-                this.code += value
+            onInput(key) {
+                this.value = (this.value + key).slice(0, 6);
             },
             onDelete() {
-                this.code = this.code.substring(0, this.code.length - 1)
+                this.value = this.value.slice(0, this.value.length - 1);
             },
             btnCount(action) {
                 if (action == 'add') {
@@ -201,6 +198,29 @@
             },
             closePopup() {
                 this.showPayment = false
+            },
+            submitInvestor() {
+                this.$api.sendRequest('submitInvestor', {
+                    prodNo: this.prodNo,
+                    amount: this.money,
+                }).then(res => {
+                    if (res.data.result) {
+                        this.$messagebox({
+                            title: '提示',
+                            message: '投资成功'
+                        }).then(action => {
+                            if (action == 'confirm') {
+                                this.$router.push({
+                                    path: '/resultDetails', query: {money: this.money}
+                                })
+                            }
+                        })
+                    }
+                    console.log(res);
+                })
+            },
+            onClickLeft() {
+                this.$router.push('/investment')
             }
         },
     }
@@ -216,6 +236,7 @@
             height: auto;
             background-color: #FFFFFF;
             padding: 60px 0 40px 0;
+            margin-top: 88px;
             .content {
                 width: 720px;
                 height: 130px;
@@ -365,7 +386,6 @@
                     }
                 }
             }
-
         }
         .foot {
             width: 750px;
@@ -381,7 +401,7 @@
         }
         .payment {
             width: 100%;
-            height: 880px;
+            height: 1000px;
             font-size: 28px;
             .total {
                 width: 100%;
@@ -406,31 +426,19 @@
                     font-weight: bold;
                 }
             }
-            .phone {
-                width: 650px;
-                height: 80px;
-                line-height: 80px;
-                margin: 20px auto;
-                color: #101010;
-                font-size: 32px;
+            .tip1 {
+                height: 100px;
+                line-height: 100px;
+                font-size: 28px;
+                color: #979696;
+                text-indent: 50px;
             }
-            .code {
-                display: flex;
-                justify-content: space-between;
-                width: 650px;
-                height: 80px;
+            .tip2 {
+                width: 660px;
                 margin: 0 auto;
-                color: #101010;
-                input {
-                    display: inline-block;
-                    width: 450px;
-                    border: 1px solid #BBBBBB;
-                    text-indent: 20px;
-                }
-                .send {
-                    width: 200px;
-                    height: 80px;
-                }
+                font-size: 28px;
+                color: #3D70FD;
+                text-align: right;
             }
             .makeTurePay {
                 width: 650px;

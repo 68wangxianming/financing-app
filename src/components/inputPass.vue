@@ -30,6 +30,7 @@
             },
             Tip1: '',
             Tip2: '',
+            showType: ''
         },
         data() {
             return {
@@ -58,7 +59,10 @@
             onInput(key) {
                 this.value = (this.value + key).slice(0, 6);
                 if (this.value.length == 6) {
-                    this.$listener.$emit('password', this.value)
+                    this.$listener.$emit('password', {
+                        password: this.value,
+                        showType: this.showType
+                    })
                 }
             },
             onDelete() {

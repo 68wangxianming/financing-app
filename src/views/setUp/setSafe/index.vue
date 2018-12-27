@@ -9,14 +9,14 @@
         </div>
         <div class="setSafeDetails">
             <div class="content">
-                <div @click="setPass('/setPass')">
+                <div @click="setPass('/setPass')" v-if="showSetPass">
                     <mt-cell title="支付密码" is-link class="item">
                         <span class="tip">未设置</span>
                     </mt-cell>
                 </div>
-                <div @click="setPass('/changePass')">
+                <div @click="setPass('/changePass')" v-if="!showSetPass">
                     <mt-cell title="修改密码" is-link class="item">
-                        <span class="tip">未设置</span>
+                        <span class="tip">去修改</span>
                     </mt-cell>
                 </div>
                 <div @click="setPass('/forgetPass')">
@@ -32,7 +32,12 @@
 <script>
     export default {
         data() {
-            return {}
+            return {
+                showSetPass: true
+            }
+        },
+        created() {
+            this.getUserInfo()
         },
         methods: {
             setPass(str) {
@@ -41,6 +46,15 @@
             onClickLeft() {
                 this.$router.push('/setUp')
             },
+            getUserInfo() {
+                this.$api.sendRequest('getUserInfo').then(res => {
+                    if (res.data.userInfo.payPassword) {
+                        this.showSetPass = false
+                    } else {
+                        this.showSetPass = true
+                    }
+                })
+            }
         }
     }
 </script>
@@ -50,14 +64,14 @@
         width: 100%;
         height: 100vh;
         background-color: #F5F5F5;
-        .setSafeDetails{
+        .setSafeDetails {
             background-color: #FFFFFF;
             margin-top: 88px;
             padding: 5px 0;
             .content {
                 width: 700px;
                 margin: 20px auto;
-                .tip{
+                .tip {
                     font-size: 28px;
                 }
             }

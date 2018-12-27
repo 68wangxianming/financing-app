@@ -12,6 +12,7 @@ const globalFunctions = {
             arr.push([...money.substr(i * 3, 3)].reverse().join(''));
         return arr.reverse().join('.');
     },
+    //流水
     flowType(num) {
         let arr = ['充值', '提现', '投资', '收益']
         return arr[num - 1]
@@ -19,6 +20,11 @@ const globalFunctions = {
     flowStatus(num) {
         let arr = ['创建', '成功', '失败']
         return arr[num - 1]
+    },
+    //投资记录状态
+    investorRecordStatus(num) {
+        let arr = ['提交','待审核','审核失败','投资进行中','投资完毕，收益入账']
+        return arr[num]
     },
     timeConversion(time) {
         let now = new Date(time);

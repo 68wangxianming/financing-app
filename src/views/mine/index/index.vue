@@ -16,7 +16,7 @@
                 <div class="bottom">
                     <div class="left">
                         <p>总资产(Rp)</p>
-                        <p>{{accountInfo.availableBalance+accountInfo.freezeBalance}}</p>
+                        <p>{{totalAssets}}</p>
                     </div>
                     <div class="right">
                         <p>累计收益(Rp)</p>
@@ -32,7 +32,7 @@
                     <span class="money">{{accountInfo.availableBalance}}</span>
                 </div>
                 <div class="item handle">
-                    <mt-button class="btn">提现</mt-button>
+                    <mt-button class="btn" @click="drawCash">提现</mt-button>
                     <mt-button class="btn" @click="recharge">充值</mt-button>
                 </div>
             </div>
@@ -70,6 +70,11 @@
                 </mt-cell>
             </div>
         </div>
+
+        <unlogin :showPopUp="showPopUp" v-if="showPopUp" @closePopup="closeUnlogin"></unlogin>
+
+
+        <br>
         <br>
         <br>
         <br>
@@ -79,12 +84,16 @@
 </template>
 
 <script>
+    import unlogin from 'components/unLogin.vue'
+
     export default {
         data() {
             return {
+                showPopUp: false,
                 userInfo: {},
                 accountInfo: {},
-                income:'',
+                income: '',
+                totalAssets: '',
                 recordList: [
                     {url: require('./img/record1.png'), info: '资金流水', path: '/moneyFlow'},
                     {url: require('./img/record2.png'), info: '投资记录', path: '/investmentRecord'},
@@ -93,25 +102,30 @@
             }
         },
         created() {
-            this.getUserInfo()
-            this.getAccountInfo()
-            this.getYesterdayEarning()//昨日收益
+            this.$store.dispatch('FLASH_ADMIN_TOKEN');
+            if (this.$store.state.adminToken == 'null') {
+            } else {
+                this.getUserInfo()
+                this.getAccountInfo()
+                this.getYesterdayEarning()//昨日收益
+            }
         },
         methods: {
             getUserInfo() {
                 this.$api.sendRequest('getUserInfo').then(res => {
                     if (res && res.code == 200) {
                         this.userInfo = res.data && res.data.userInfo || ''
-                        localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+                        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
                     }
                 })
             },
             getAccountInfo() {
                 this.$api.sendRequest('getAccountInfo').then(res => {
                     if (res && res.code == 200) {
-                        this.accountInfo = res.data && res.data.accountInfo || ''
-                        localStorage.setItem('accountInfo',JSON.stringify(this.accountInfo))
-
+                        console.log(res.data.accountInfo.availableBalance);
+                        this.accountInfo = res.data && res.data.accountInfo || {}
+                        this.totalAssets = res.data && res.data.accountInfo && (res.data.accountInfo.availableBalance + res.data.accountInfo.freezeBalance) || ''
+                        localStorage.setItem('accountInfo', JSON.stringify(this.accountInfo))
                     }
                 })
             },
@@ -123,11 +137,35 @@
                 })
             },
             goRecord(str) {
-                this.$router.push(str)
+                this.$store.dispatch('FLASH_ADMIN_TOKEN');
+                if (this.$store.state.adminToken == 'null') {
+                    this.showPopUp = true
+                } else {
+                    this.$router.push(str)
+                }
             },
             recharge() {
-                this.$router.push('/recharge')
+                this.$store.dispatch('FLASH_ADMIN_TOKEN');
+                if (this.$store.state.adminToken == 'null') {
+                    this.showPopUp = true
+                } else {
+                    this.$router.push('/recharge')
+                }
+            },
+            drawCash() {
+                this.$store.dispatch('FLASH_ADMIN_TOKEN');
+                if (this.$store.state.adminToken == 'null') {
+                    this.showPopUp = true
+                } else {
+                    this.$router.push('/drawCash')
+                }
+            },
+            closeUnlogin() {
+                this.showPopUp = false
             }
+        },
+        components: {
+            unlogin
         }
     }
 </script>
@@ -151,8 +189,8 @@
                     text-indent: 30px;
                     font-size: 30px;
                     img {
-                        width: 50px;
-                        height: 50px;
+                        width: 100px;
+                        height: 100px;
                         border-radius: 50%;
                         margin-left: 40px;
                     }

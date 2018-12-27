@@ -41,9 +41,9 @@
                     cancelButtonText: "取消"
                 }).then(action => {
                     if (action == 'confirm') {
-                        console.log('退出成功')
+                        localStorage.clear()
+                        this.$router.push('/login')
                     } else {
-                        console.log('取消登录')
                     }
                 })
             },

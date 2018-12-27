@@ -25,7 +25,7 @@
         </div>
 
 
-        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid aspernatur commodi consectetur debitis et harum incidunt iste libero, neque nihil nostrum officiis optio quaerat quam quasi quis sint totam, voluptates!</div>
+
     </div>
 </template>
 

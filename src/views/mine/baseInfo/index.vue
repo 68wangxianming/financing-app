@@ -2,13 +2,11 @@
     <div class="baseInfo">
         <div class="details">
             <div class="content">
-                <van-cell-group>
-                    <van-field clearable label="头像" disabled input-align="right">
-                        <!-- 默认头像 -->
-                        <img v-if="!base64Image" src="./imgs/head.png" class="head" slot="button" @click="clickFile">
-                        <img v-if="base64Image" :src="base64Image" class="head" slot="button" @click="clickFile">
-                    </van-field>
-                </van-cell-group>
+                <van-cell title="头像">
+                    <!-- 默认头像 -->
+                    <img slot="right-icon" v-if="!base64Image" src="./imgs/head.png" class="head" @click="clickFile">
+                    <img slot="right-icon" v-if="base64Image" :src="base64Image" class="head" @click="clickFile">
+                </van-cell>
                 <van-field v-model="name" clearable label="姓名" placeholder="请输入您的姓名" input-align="right"/>
                 <van-field v-model="idNumber" clearable label="身份证号" placeholder="请输入您的身份证号" input-align="right"/>
                 <van-field v-model="email" clearable label="邮箱" placeholder="请输入您的邮箱" input-align="right"/>
@@ -151,8 +149,8 @@
                 width: 720px;
                 margin: 0 auto;
                 .head {
-                    width: 150px;
-                    height: 150px;
+                    width: 80px;
+                    height: 80px;
                 }
             }
         }

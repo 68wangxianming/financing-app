@@ -4,15 +4,15 @@
             <van-nav-bar title="银行卡" left-arrow @click-left="onClickLeft"/>
         </div>
         <div class="bankList">
-            <div class="item" v-for="item in bankList">
+            <div class="item" v-for="(item,index) in bankList" :key="index" @click="chooseBank(item)">
                 <div class="top">
-                    <div class="bg" :style="{backgroundImage:'url('+item.bankLog+')'}"></div>
-                    <span class="operation">解绑</span>
+                    <div class="bg">{{item.bankName}}</div>
+                    <span class="operation" @click="unbindBankCard(item.id)">解绑</span>
                 </div>
                 <div class="middle">
                     <span class="span1">****</span>
                     <span class="span2">**</span>
-                    <span class="span3">{{item.card}}</span>
+                    <span class="span3">{{item._number}}</span>
                 </div>
                 <div class="bottom"></div>
             </div>
@@ -22,7 +22,8 @@
             </mt-cell>
         </div>
 
-        <inputPass :showPopUp="showPopUp" :Tip1="Tip1" :Tip2="Tip2" @closePopup="closePopup"></inputPass>
+        <inputPass :showPopUp="showPopUp" :Tip1="Tip1" :Tip2="Tip2" @closePopup="closePopup"
+                   :showType="showType"></inputPass>
     </div>
 </template>
 
@@ -32,46 +33,118 @@
     export default {
         data() {
             return {
+                id: null,
                 showPopUp: false,
                 Tip1: '添加银行卡',
                 Tip2: '请输入支付密码，已验证身份\n',
-                bankList: [
-                    {bankLog: require('./imgs/bca@3x.jpg'), card: '1000'},
-                    {bankLog: require('./imgs/bri@3x.png'), card: '1001'},
-                    {bankLog: require('./imgs/mandiri@3x.png'), card: '1002'},
-                    {bankLog: require('./imgs/mandiri@3x.png'), card: '1002'},
-                    {bankLog: require('./imgs/mandiri@3x.png'), card: '1002'},
-                    {bankLog: require('./imgs/mandiri@3x.png'), card: '1002'},
-                ],
-                password: ''
+                bankList: [],
+                password: '',
+                payPassword: '',
+                currentPage: 1,
+                perPage: 10,
+                showType: '',//判断调用inputPass 是那种情况
             }
         },
         created() {
             this.$listener.$on('password', data => {
-                console.log(data, '拿到数据');
-                this.password = data
-                this.checkPass(this.password)
+                this.password = data.password
+                this.checkPass(this.password, data.showType)
             })
+            this.getBankCardList()
         },
         methods: {
-            checkPass(num) {
-                console.log(num, 'success');
-                this.$listener.$emit('checkError', 'error')
+            getBankCardList() {
+                this.$api.sendRequest('getBankCardList', {
+                    currentPage: this.currentPage,
+                    perPage: this.perPage
+                }).then(res => {
+                    if (res.data.items) {
+                        res.data.items.forEach(v => {
+                            v._number = v.number.slice(v.number.length - 4, v.number.length)
+                            v.bankName = v.bankInfo && v.bankInfo.name || ''
+                        })
+                        this.bankList = res.data.items
+                    }
+                })
+            },
+            checkPass(num, type) {
+                let typeChoose = type
+                this.$api.sendRequest('verifyPayPassword', {
+                    payPassword: num
+                }).then(res => {
+                    if (res.data.result) {
+                        if (typeChoose == 'addCard') {
+                            this.$router.push('/addBankCard')
+                        } else {
+                            this.unbindBankCardResult()
+                        }
+                    } else {
+                        this.$listener.$emit('checkError', 'error')
+                    }
+                })
             },
             addCard() {
+                this.$api.sendRequest('getUserInfo').then(res => {
+                    if (res.data.userInfo.payPassword) {
+                        this.payPassword = res.data.payPassword
+                        this.showPopUp = true
+                        this.showType = 'addCard'
+                    } else {
+                        this.$messagebox({
+                            title: '提示',
+                            message: '请去设置下设置支付密码',
+                            showCancelButton: true
+                        }).then(action => {
+                            if (action == 'confirm') {
+                                this.$router.push('/setPass')
+                            }
+                        })
+                    }
+                })
+            },
+            unbindBankCard(id) {
+                this.id = id
                 this.showPopUp = true
+                this.Tip1 = '解绑银行卡'
+                this.showType = 'unbindBankCard'
+            },
+            unbindBankCardResult() {
+                this.$api.sendRequest('unbindBankCard', {
+                    id: this.id
+                }).then(res => {
+                    if (res.data.result) {
+                        this.$messagebox({
+                            title: '提示',
+                            message: '解绑成功',
+                        }).then(action => {
+                            if (action == 'confirm') {
+                                this.$router.push('/dataMangement')
+                            }
+                        })
+                    }
+                })
             },
             closePopup() {
                 this.showPopUp = false
             },
             onClickLeft() {
                 this.$router.push('/dataMangement')
+            },
+            chooseBank(item) {
+                this.$router.push({
+                    path: 'drawCash',
+                    query: {
+                        name: item.bankInfo.name,
+                        code: item.bankInfo.code,
+                        id: item.id,
+                        number: item.number
+                    }
+                })
             }
         },
         components: {
             inputPass
         }
-
     }
 </script>
 
@@ -101,11 +174,10 @@
                     height: 70px;
                     line-height: 70px;
                     .bg {
-                        width: 100px;
+                        width: 450px;
                         height: 70px;
-                        background: url("imgs/bca@3x.jpg") no-repeat center;
-                        background-size: contain;
                         margin-left: 20px;
+                        overflow: hidden;
                     }
                     .operation {
                         color: #3E70FD;

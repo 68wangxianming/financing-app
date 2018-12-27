@@ -40,9 +40,28 @@ import 'vant/lib/nav-bar/style';
 import 'vant/lib/password-input/style';
 import 'vant/lib/cell-group/style';
 import 'vant/lib/cell/style';
-import {Button, NumberKeyboard, Popup, Field, Tab, Tabs, Collapse, CollapseItem, NavBar, PasswordInput,CellGroup,Cell} from 'vant';
+import 'vant/lib/step/style';
+import 'vant/lib/steps/style';
+import 'vant/lib/actionsheet/style';
+import {
+    Button,
+    NumberKeyboard,
+    Popup,
+    Field,
+    Tab,
+    Tabs,
+    Collapse,
+    CollapseItem,
+    NavBar,
+    PasswordInput,
+    CellGroup,
+    Cell,
+    Step,
+    Steps,
+    Actionsheet
+} from 'vant';
 
-Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs).use(Collapse).use(CollapseItem).use(NavBar).use(PasswordInput).use(CellGroup).use(Cell);
+Vue.use(Button).use(NumberKeyboard).use(Popup).use(Field).use(Tab).use(Tabs).use(Collapse).use(CollapseItem).use(NavBar).use(PasswordInput).use(CellGroup).use(Cell).use(Step).use(Steps).use(Actionsheet);
 
 new Vue({
     i18n,

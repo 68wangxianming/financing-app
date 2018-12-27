@@ -155,4 +155,10 @@ export default {
             require(['views/mine/rechargePrompt/index.vue'], resolve)
         }
     },
+    '/drawCash': {
+        meta: {title: '提现'},
+        component: (resolve) => {
+            require(['views/mine/drawCash/index.vue'], resolve)
+        }
+    },
 }

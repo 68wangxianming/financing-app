@@ -2,7 +2,7 @@
     <div class="bankChoice">
         <div class="list">
             <div class="item" v-for="(item, index) in bankList" :key="index" :title="item.name"
-                 @click.native="choiceBank(item, index)">
+                 @click="choiceBank(item, index)">
                 <img :src="item.imgUrl">
                 <span>{{item.name}}</span>
             </div>
@@ -107,6 +107,10 @@
         methods: {
             goPage() {
                 this.$router.push('/bankList')
+            },
+            choiceBank(item, index) {
+                this.$router.push('/addBankCard')
+                this.$router.push({path: '/addBankCard', query: {bankName: item.name, code: item.code}})
             }
         }
     }

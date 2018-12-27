@@ -3,17 +3,17 @@
         <div class="details">
             <div class="content">
                 <van-cell-group>
-                    <van-field v-model="name" clearable label="银行" disabled input-align="right">
+                    <van-field v-model="bankName" clearable label="银行" disabled input-align="right">
                         <div class="choose" slot="button" @click="chooseBank"></div>
                     </van-field>
                 </van-cell-group>
-                <van-field v-model="name" clearable label="银行卡号" placeholder="请输入银行卡号" input-align="right"/>
+                <van-field v-model="number" clearable label="银行卡号" placeholder="请输入银行卡号" input-align="right" type="number"/>
                 <van-field v-model="name" clearable label="用户名" placeholder="请输入用户名" input-align="right"/>
                 <van-cell-group>
-                    <van-field v-model="name" clearable placeholder="请输入手机号" input-align="right">
+                    <van-field v-model="mobile" clearable placeholder="请输入手机号" input-align="right" type="number">
                         <div slot="label" class="phone">
                             <span>手机号</span>
-                            <select name="" id="phone-area" class="phone-area" @click="selectChange">
+                            <select name="" id="phone-area" class="phone-area">
                                 <option v-if="selectShow">{{globalCode}}</option>
                                 <option v-if="!selectShow" value="item" v-for="item in inputSelect">+{{item}}</option>
                             </select>
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <mt-button class="invest" size="small" @click="goPage('/dataMangement')">提交</mt-button>
+        <mt-button class="invest" size="small" @click="saveSend">提交</mt-button>
 
     </div>
 </template>
@@ -33,6 +33,11 @@
         data() {
             return {
                 name: '',
+                bankName: '',
+                bankCode: '',
+                number: '',
+                mobile: '',
+                globalCode: '',
                 selectShow: false,
                 inputSelect: [
                     62, 355, 376, 43, 61, 213, 244, 54, 1268, 93, 994, 1907, 374, 1264, 297, 247, 375, 359, 32, 387, 299, 267, 299, 257, 1246, 55, 591, 501,
@@ -41,15 +46,63 @@
                 ],
             }
         },
+        created() {
+            this.bankName = this.$route.query.bankName || ''
+            this.bankCode = this.$route.query.code || ''
+        },
         methods: {
-            goPage(str) {
-                this.$router.push(str)
+            saveSend(str) {
+                let reg = /^8\d+$/;
+                if (this.bankName.trim() == '') {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请选择银行'
+                    })
+                    return false
+                } else if (this.number.trim() == '') {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确银行卡号'
+                    })
+                    return false
+                } else if (this.name == '') {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确姓名'
+                    })
+                    return false
+                } else if (!reg.test(this.mobile)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确手机号'
+                    })
+                    return false
+                }
+                this.save()
             },
             chooseBank() {
                 this.$router.push('/bankChoice')
             },
-            selectChange() {
-
+            save() {
+                let obj = document.getElementById('phone-area')
+                let index = obj.selectedIndex
+                let text = obj.options[index].text
+                this.$api.sendRequest('addBankCard', {
+                    name: this.name,
+                    number: this.number,
+                    mobile: this.mobile,
+                    globalCode: text,
+                    bankCode: this.bankCode,
+                }).then((res) => {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '提交成功',
+                    }).then(action => {
+                        if (action == 'confirm') {
+                            this.$router.push('/dataMangement')
+                        }
+                    })
+                })
             }
         }
     }

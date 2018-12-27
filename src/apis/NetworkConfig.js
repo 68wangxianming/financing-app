@@ -43,6 +43,19 @@ let config = {
     getProfileInfo: {method: 'get', url: '/getProfileInfo'},
     saveProfile: {method: 'post', url: '/saveProfile'},
     getUserAvatar: {method: 'get', url: '/getUserAvatar'},
+    setPayPassword: {method: 'post', url: '/setPayPassword'},
+    verifyPayPassword: {method: 'post', url: '/verifyPayPassword'},
+    getBankList: {method: 'get', url: '/getBankList'},
+    addBankCard: {method: 'post', url: '/addBankCard'},
+    getBankCardList: {method: 'get', url: '/getBankCardList'},
+    unbindBankCard: {method: 'get', url: '/unbindBankCard'},
+    submitInvestor: {method: 'post', url: '/submitInvestor'},
+    getInvestorList: {method: 'get', url: '/getInvestorList'},
+    submitWithdraw: {method: 'post', url: '/submitWithdraw'},
+    getMinWithdrawAmount: {method: 'get', url: '/getMinWithdrawAmount'},
+    getServiceFacebook: {method: 'get', url: '/getServiceFacebook'},
+    getServiceLine: {method: 'get', url: '/getServiceLine'},
+    getServiceWhatsapp: {method: 'get', url: '/getServiceWhatsapp'},
 
 }
 
