@@ -1,5 +1,8 @@
 <template>
     <div class="investmentRecord">
+        <div class="navBar">
+            <van-nav-bar title="投资记录" left-arrow @click-left="onClickLeft"/>
+        </div>
         <div class="wapper" ref="wrapper" :style="{ height: (wrapperHeight-50) + 'px' }">
             <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
                          :top-method="loadTop" @top-status-change="handleTopChange"
@@ -104,12 +107,12 @@
                 }, 1500);
             },
             onClickLeft() {
-
+                this.$router.push('/home')
             },
             goPage(name, code) {
                 this.$router.push('/addBankCard')
                 this.$router.push({path: '/addBankCard', query: {bankName: name, code: code}})
-            }
+            },
         }
     };
 </script>
@@ -122,6 +125,7 @@
             width: 100%;
             height: calc(100vh - 100px);
             overflow: auto;
+            margin-top: 88px;
             .page-loadmore-listitem {
                 width: 750px;
                 height: auto;

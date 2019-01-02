@@ -178,19 +178,20 @@
             width: 100%;
             background-color: #3D70FD;
             padding: 50px 0;
-            /*margin-top: 88px;*/
+            margin-top: 88px;
             .content {
                 width: 720px;
                 margin: 0 auto;
                 color: #FFFFFF;
                 .head {
                     display: flex;
-                    line-height: 50px;
+                    height: 70px;
+                    line-height: 70px;
                     text-indent: 30px;
                     font-size: 30px;
                     img {
-                        width: 100px;
-                        height: 100px;
+                        width: 70px;
+                        height: 70px;
                         border-radius: 50%;
                         margin-left: 40px;
                     }

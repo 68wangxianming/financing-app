@@ -1,5 +1,8 @@
 <template>
     <div class="moneyFlow">
+        <div class="navBar">
+            <van-nav-bar title="资金流水" left-arrow @click-left="onClickLeft"/>
+        </div>
         <van-tabs v-model="active" swipeable color="#3D70FD" ellipsis @click="onClick">
             <van-tab title="全部"></van-tab>
             <van-tab title="充值"></van-tab>
@@ -125,6 +128,9 @@
                     this.getAccountRecord()
                     this.$refs.loadmore.onTopLoaded();
                 }, 1500);
+            },
+            onClickLeft() {
+                this.$router.push('/home')
             }
         },
 

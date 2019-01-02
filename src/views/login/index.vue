@@ -25,7 +25,6 @@
         </div>
 
 
-
     </div>
 </template>
 
@@ -57,21 +56,21 @@
                 })
             },
             sendCode() {
-                // let reg = /^(\+?62|0?)8\d+$/;
-                // if (!reg.test(this.phone)) {
-                //     this.$messagebox({
-                //         title: '提示',
-                //         message: '请输入正确手机号',
-                //     });
-                //     return
-                // }
-                // if (this.captcha == '') {
-                //     this.$messagebox({
-                //         title: '提示',
-                //         message: '请输入图形验证码',
-                //     });
-                //     return
-                // }
+                let reg = /^8\d+$/;
+                if (!reg.test(this.phone)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确手机号',
+                    });
+                    return
+                }
+                if (this.captcha == '') {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入图形验证码',
+                    });
+                    return
+                }
                 this.$api.sendRequest('sendCaptchaSms', {
                     uuid: this.uuid,
                     globalCode: this.globalCode,
@@ -85,27 +84,27 @@
                 })
             },
             login() {
-                // let re = /^\d{4}$/
-                // let reg = /^(\+?62|0?)8\d+$/;
-                // if (!reg.test(this.phone)) {
-                //     this.$messagebox({
-                //         title: '提示',
-                //         message: '请输入正确手机号',
-                //     });
-                //     return
-                // } else if (!re.test(this.code)) {
-                //     this.$messagebox({
-                //         title: '提示',
-                //         message: '请输入正确短信验证码',
-                //     });
-                //     return
-                // } else if (this.captcha == "") {
-                //     this.$messagebox({
-                //         title: '提示',
-                //         message: '请输入正确图形验证码',
-                //     });
-                //     return
-                // }
+                let re = /^\d{4}$/
+                let reg = /^8\d+$/;
+                if (!reg.test(this.phone)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确手机号',
+                    });
+                    return
+                } else if (!re.test(this.code)) {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确短信验证码',
+                    });
+                    return
+                } else if (this.captcha == "") {
+                    this.$messagebox({
+                        title: '提示',
+                        message: '请输入正确图形验证码',
+                    });
+                    return
+                }
                 this.$api.sendRequest('login', {
                     uuid: this.uuid,
                     phone: this.phone,
@@ -115,7 +114,7 @@
                         localStorage.setItem('authToken', res.data.authToken)
                         this.$store.commit('UPDATE_ADMIN_TOKEN', res.data.authToken);
                         clearTimeout(timeout)
-                        this.$router.push('/home')
+                        this.getUserInfo()
                     }
                 })
             },
@@ -134,7 +133,18 @@
                         this.countDown(time)
                     }, 1000)
                 }
-            }
+            },
+            getUserInfo() {
+                this.$api.sendRequest('getUserInfo').then(res => {
+                    if (res && res.code == 200) {
+                        if (res.data.userInfo && res.data.userInfo.payPassword) {
+                            this.$router.push('/home')
+                        }else {
+                            this.$router.push('/setPass')
+                        }
+                    }
+                })
+            },
         }
     }
 </script>

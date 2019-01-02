@@ -1,5 +1,8 @@
 <template>
     <div class="recharge">
+        <div class="navBar">
+            <van-nav-bar title="充值" left-arrow @click-left="onClickLeft"/>
+        </div>
         <div class="noRecharge" v-if="showRecharge">
             <div class="content">
                 <input type="text" placeholder="请输入充值金额" v-model="amount">
@@ -116,6 +119,9 @@
                     this.showRecharge = true
                 }
             },
+            onClickLeft() {
+                this.$router.push('/home')
+            }
         }
     }
 </script>
@@ -130,6 +136,7 @@
             width: 750px;
             height: 300px;
             background-color: #FFFFFF;
+            margin-top: 88px;
             input {
                 width: 500px;
                 height: 100px;
